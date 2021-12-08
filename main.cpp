@@ -5,29 +5,41 @@
 using namespace std;
 
 
-void printCandidates(vector<vector<int>> candidates) {
+void printCandidates(vector<vector<int>*>* candidates) {
     cout << "Candidates: " << endl;
     cout << "======================================================" << endl;
-    for (int i = 0; i < candidates.size(); i++) {
-        cout << "Size: " << i + 1 << " End Values:";
-        for (int value : candidates.at(i)) {
+    for (int i = 0; i < candidates->size(); i++) {
+        cout << "S_ " << i + 1 << " EV_";
+        for (int value : *(candidates->at(i))) {
             cout << " " << value;
         }
         cout << endl;
     }
 }
 
+void insertOnSize(vector<vector<int>*>* candidates, int size, int value) {
+    // Check if candidate has a vector
+    try {
+        candidates->at(size);
+    }
+    catch (const out_of_range& oor) {
+        candidates->push_back(new vector<int>());
+    }
+    candidates->at(size)->push_back(value);
+}
 
-void compute_lis(vector<int> sequence) {
-    vector<vector<int>> candidates;
+vector<int> compute_lis(vector<int> sequence) {
+    vector<vector<int>*>* candidates;
+
+    candidates = new vector<vector<int>*>();
 
     bool firstTime = true;
-    int highestValue, lowestValue;
+    int highestValue = 0, lowestValue = 0;
 
     for (auto num : sequence) {
 
         if (firstTime || lowestValue > num) {
-            candidates.at(0).push_back(num);
+            insertOnSize(candidates, 0, num);
             lowestValue = num;
             if (firstTime) {
                 highestValue = num;
@@ -36,19 +48,23 @@ void compute_lis(vector<int> sequence) {
         }
 
         if (highestValue < num) {
-            for(int i = 0; i < candidates.size(); i++) {
-                for(int value : candidates.at(i)) {
-                    candidates.at(i + 1).push_back(num);
+            int oldSize = candidates->size();
+            for(int i = 0; i < oldSize; i++) {
+                for(int value : *(candidates->at(i))) {
+                    if (value != num) {
+                        insertOnSize(candidates, i + 1, num);
+                    }
                 }
             }
             highestValue = num;
         }
 
         if (lowestValue < num && num < highestValue) {
-            for(int i = 0; i < candidates.size(); i++) {
-                for(int value : candidates.at(i)) {
+            int oldSize = candidates->size();
+            for(int i = 0; i < oldSize; i++) {
+                for(int value : *(candidates->at(i))) {
                     if (value < num) {
-                        candidates.at(i + 1).push_back(num);
+                        insertOnSize(candidates, i + 1, num);
                     }
                 }
             }
@@ -58,11 +74,28 @@ void compute_lis(vector<int> sequence) {
 
     }
 
+    vector<int> results;
+
+    results.push_back(candidates->size());
+    results.push_back(candidates->at(candidates->size() - 1)->size());
+
+
+    vector<vector<int>*>::iterator iter;
+    for (auto candidate : *candidates) {
+        candidate->clear();
+    }
+    for (iter = candidates->begin(); iter != candidates->end(); ) {
+        iter = candidates->erase(iter);
+    }
+
+    delete candidates;
+
+    return results;
 }
 
 int main(int argc, char** argv) {
     int type, num;
-    vector<int> sequence;
+    vector<int> sequence, results;
 
     cin >> type;
 
@@ -71,10 +104,12 @@ int main(int argc, char** argv) {
     }
 
     if (type == 1) {
-        compute_lis(sequence);
+        results = compute_lis(sequence);
     } else {
 
     }
+
+    cout << results[0] << " " << results[1] << endl;
 
     return 0;
 }
