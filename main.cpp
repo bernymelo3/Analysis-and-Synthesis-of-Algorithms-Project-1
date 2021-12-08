@@ -4,109 +4,60 @@
 
 using namespace std;
 
-struct EndCandidate {
-    int size;
-    int value;
-    vector<int>* sequence;
-};
 
-EndCandidate* getLargestCandidate(list<EndCandidate*> candidates) {
-    int maxSize = 0;
-    EndCandidate* maxCandidate;
-
-    for(auto candidate : candidates) {
-        if (candidate->size > maxSize) {
-            maxCandidate = candidate;
-            maxSize = candidate->size;
-        }
-    }
-
-    return maxCandidate;
-}
-
-
-EndCandidate* getCandidateLowerThan(list<EndCandidate*> candidates, int value) {
-    int maxSize = 0;
-    EndCandidate* lowerCandidate;
-
-    for(auto candidate : candidates) {
-        if (candidate->value < value) {
-            lowerCandidate = candidate;
-        }
-    }
-
-    return lowerCandidate;
-}
-
-
-void discardCandidates(list<EndCandidate*> candidates, int size) {
-    for (int i = 0; i < candidates.size(); i++) {
-        if (candidates[i].size == size) {
-            candidates.remove(candidates[i]);
-        }
-    }
-}
-
-void printCandidates(list<EndCandidate*> candidates) {
+void printCandidates(vector<vector<int>> candidates) {
     cout << "Candidates: " << endl;
     cout << "======================================================" << endl;
-    for (auto candidate : *candidates) {
-        for (int num : candidate->sequence) {
-            cout << " " << num;
+    for (int i = 0; i < candidates.size(); i++) {
+        cout << "Size: " << i + 1 << " End Values:";
+        for (int value : candidates.at(i)) {
+            cout << " " << value;
         }
         cout << endl;
     }
 }
 
 
-vector<int> compute_lis(vector<int> sequence) {
-    list<EndCandidate*>* candidates;
+void compute_lis(vector<int> sequence) {
+    vector<vector<int>> candidates;
 
-    candidates = new list<EndCandidate*>();
-
-    bool boundariesDefined = false;
-    int smallestEnd = 0, largestEnd = 0;
+    bool firstTime = true;
+    int highestValue, lowestValue;
 
     for (auto num : sequence) {
-        if (!boundariesDefined || smallestEnd > num) {
-            // Case 1
 
-            EndCandidate *current;
-            // Initialize new sequence
-            current = new EndCandidate();
-            current->sequence = new vector<int>();
-            current->size = 1;
-            current->value = num;
-
-            candidates->push_back(current);
-
-            if (!boundariesDefined) {
-                boundariesDefined = true;
-                smallestEnd = num;
-                largestEnd = num;
+        if (firstTime || lowestValue > num) {
+            candidates.at(0).push_back(num);
+            lowestValue = num;
+            if (firstTime) {
+                highestValue = num;
+                firstTime = false;
             }
         }
-        if (num > largestEnd) {
-            // Case 2
-            EndCandidate *current;
-            current = new EndCandidate(getLargestCandidate(*candidates));
-            current->sequence->push_back(num);
-            current->value = num;
-            current->size = current->size + 1;
-        }
-        if (boundariesDefined && (smallestEnd < num) && (num < largestEnd)) {
-            // Case 3
-            EndCandidate *current;
-            current = new EndCandidate(getCandidateLowerThan(*candidates, num));
-            current->sequence->push_back(num);
-            current->value = num;
-            current->size = current->size + 1;
-            discardCandidates(current->size);
+
+        if (highestValue < num) {
+            for(int i = 0; i < candidates.size(); i++) {
+                for(int value : candidates.at(i)) {
+                    candidates.at(i + 1).push_back(num);
+                }
+            }
+            highestValue = num;
         }
 
-        printCandidates(*candidates);
+        if (lowestValue < num && num < highestValue) {
+            for(int i = 0; i < candidates.size(); i++) {
+                for(int value : candidates.at(i)) {
+                    if (value < num) {
+                        candidates.at(i + 1).push_back(num);
+                    }
+                }
+            }
+        }
+
+        printCandidates(candidates);
 
     }
+
 }
 
 int main(int argc, char** argv) {
@@ -120,9 +71,10 @@ int main(int argc, char** argv) {
     }
 
     if (type == 1) {
-
+        compute_lis(sequence);
     } else {
 
     }
 
+    return 0;
 }
