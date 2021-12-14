@@ -73,6 +73,7 @@ vector<int> compute_lis(vector<int> sequence) {
         printCandidates(candidates);
 
     }
+    
 
     vector<int> results;
 
@@ -93,6 +94,14 @@ vector<int> compute_lis(vector<int> sequence) {
     return results;
 }
 
+
+vector<int> compute_lis_type2(vector<int> sequence) {
+    vector<vector<int>*>* candidates;
+    candidates = new vector<vector<int>*>();
+
+
+}
+
 int main(int argc, char** argv) {
     int type, num;
     vector<int> sequence, results;
@@ -103,9 +112,10 @@ int main(int argc, char** argv) {
         sequence.push_back(num);
     }
 
-    if (type == 1) {
+    if (type == 1) {compute_lis_type2
         results = compute_lis(sequence);
     } else {
+        results = (sequence);
 
     }
 
