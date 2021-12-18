@@ -73,7 +73,6 @@ vector<int> compute_lis(vector<int> sequence) {
         printCandidates(candidates);
 
     }
-    
 
     vector<int> results;
 
@@ -94,29 +93,42 @@ vector<int> compute_lis(vector<int> sequence) {
     return results;
 }
 
+vector<int> compute_lis_type2(vector<int> sequence, vector<int> sequence2) {
+    
 
-vector<int> compute_lis_type2(vector<int> sequence) {
-    vector<vector<int>*>* candidates;
-    candidates = new vector<vector<int>*>();
-
-
+    
 }
 
+
+
 int main(int argc, char** argv) {
-    int type, num;
-    vector<int> sequence, results;
+    int type, num, num2 = 0;
+    vector<int> sequence, sequence2, results;
 
     cin >> type;
 
-    while (cin >> num) {
-        sequence.push_back(num);
-    }
-
-    if (type == 1) {compute_lis_type2
+    if (type == 1) {
+        while (cin >> num) {
+            sequence.push_back(num);
+        }
         results = compute_lis(sequence);
-    } else {
-        results = (sequence);
-
+    } 
+    else {
+       /*O PROBLEMA ESTA AQUI LE A PRIMEIRA SEQUENCE QUANDO COMEÇA A LER A OUTRA DA SEGMENTATION FAULT*/ 
+       while(cin >> num) {
+            sequence.push_back(num);
+            if (getchar() == '\n') {
+                for (int i = 0; i < sequence.size(); i++) {
+                            cout << sequence[i] << " ";
+                }
+                while(cin >> num2) {
+                    sequence2.push_back(num2);
+                    if (getchar() == '\n') {
+                         cout << "cona";
+                    }
+                }
+            }
+        }    
     }
 
     cout << results[0] << " " << results[1] << endl;
