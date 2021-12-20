@@ -118,9 +118,6 @@ int main(int argc, char** argv) {
        while(cin >> num) {
             sequence.push_back(num);
             if (getchar() == '\n') {
-                for (int i = 0; i < sequence.size(); i++) {
-                            cout << sequence[i] << " ";
-                }
                 while(cin >> num2) {
                     sequence2.push_back(num2);
                     if (getchar() == '\n') {
