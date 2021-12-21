@@ -93,10 +93,23 @@ vector<int> compute_lis(vector<int> sequence) {
     return results;
 }
 
-vector<int> compute_lis_type2(vector<int> sequence, vector<int> sequence2) {
-    
+/*Problem 2*/
+int max(int a, int b);
 
-    
+int compute_lis_type2(vector<int> sequence, vector<int> sequence2, int m, int n){
+    if (m == 0 || n == 0) {
+        return 0; 
+    }    
+    if (sequence[m - 1] == sequence2[n - 1]) {
+        return 1 + compute_lis_type2(sequence, sequence2, m - 1, n - 1);
+    }    
+    else {
+        return max(compute_lis_type2(sequence, sequence2, m, n - 1), compute_lis_type2(sequence, sequence2, m - 1, n));
+    }    
+}
+
+int max(int a, int b){
+   return (a > b) ? a : b;
 }
 
 
@@ -112,23 +125,26 @@ int main(int argc, char** argv) {
             sequence.push_back(num);
         }
         results = compute_lis(sequence);
+        cout << results[0] << " " << results[1] << endl;
     } 
     else {
-       /*O PROBLEMA ESTA AQUI LE A PRIMEIRA SEQUENCE QUANDO COMEÇA A LER A OUTRA DA SEGMENTATION FAULT*/ 
        while(cin >> num) {
             sequence.push_back(num);
             if (getchar() == '\n') {
                 while(cin >> num2) {
                     sequence2.push_back(num2);
                     if (getchar() == '\n') {
-                         cout << "cona";
+                        int m = sequence.size();
+                        int n = sequence2.size();
+                        results.push_back(compute_lis_type2(sequence, sequence2, m, n));
+                        cout << results[0] << endl;
                     }
                 }
             }
         }    
     }
-
-    cout << results[0] << " " << results[1] << endl;
-
     return 0;
 }
+
+
+
